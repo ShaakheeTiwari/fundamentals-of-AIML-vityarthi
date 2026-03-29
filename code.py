@@ -1,7 +1,7 @@
 import streamlit as st
 from textblob import TextBlob
 import time
-import speech_recognition as sr
+
 
 # -------------------------------
 # Questions
