@@ -1,7 +1,10 @@
 import streamlit as st
 from textblob import TextBlob
 import time
+import nltk
 
+# Download required data for TextBlob
+nltk.download('punkt')
 
 # -------------------------------
 # Questions
@@ -36,7 +39,7 @@ def generate_ai_feedback(score):
         return "Weak answer. Try adding examples and structured explanation."
 
 # -------------------------------
-# DARK MODE (Optional)
+# DARK MODE
 # -------------------------------
 dark_mode = st.sidebar.checkbox("🌙 Dark Mode")
 if dark_mode:
@@ -51,7 +54,7 @@ if dark_mode:
 # -------------------------------
 menu = st.sidebar.selectbox(
     "📂 Navigation",
-    ["Home", "Practice Interview", "Results Dashboard" ,"Assistant"]
+    ["Home", "Practice Interview", "Results Dashboard", "Assistant"]
 )
 
 # -------------------------------
@@ -65,42 +68,33 @@ if "history" not in st.session_state:
 # -------------------------------
 if menu == "Home":
     st.markdown("<h1 style='text-align:center;'>🎯 Smart Interview Analyzer PRO+</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center;font-size:18px;'>Practice interviews with AI feedback, voice input, and performance analytics</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center;font-size:18px;'>Practice interviews with AI feedback and performance analytics</p>", unsafe_allow_html=True)
     st.divider()
 
-    # Key Features
     st.subheader("🚀 Key Features")
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.markdown("<div style='text-align:center;'>🎤 Voice Practice</div>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center;'>Answer questions using your voice like real interviews.</p>", unsafe_allow_html=True)
+        st.markdown("🎯 Practice Interview Questions")
 
     with col2:
-        st.markdown("<div style='text-align:center;'> 🤖 AI Feedback</div>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center;'>Get instant smart feedback on your answers.</p>", unsafe_allow_html=True)
+        st.markdown("🤖 AI Feedback System")
 
     with col3:
-        st.markdown("<div style='text-align:center;'> 📊 Performance Tracking</div>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center;'>Track your improvement with score analytics.</p>", unsafe_allow_html=True)
+        st.markdown("📊 Performance Tracking")
 
     st.divider()
 
-# -------------------------------
-#
-
-
-    # How it works
     st.subheader("⚙️ How It Works")
     st.markdown("""
     1. Go to **Practice Interview**  
     2. Select a question  
-    3. Answer using text or voice  
+    3. Enter your answer  
     4. Get instant AI feedback  
-    5. Track your progress in Dashboard  
+    5. Track your progress  
     """)
-    st.divider()
-    st.success("👉 Use the sidebar to start practicing interviews")
+
+    st.success("👉 Use the sidebar to start")
 
 # -------------------------------
 # PRACTICE INTERVIEW
@@ -116,14 +110,16 @@ elif menu == "Practice Interview":
             progress.progress((i + 1) * 10)
             time.sleep(1)
 
-    
-        answer = st.text_area("Enter your answer:")
+    # ✅ Answer Input (FIXED)
+    st.subheader("✍️ Enter Your Answer")
+    answer = st.text_area("Type your answer here...")
+
     # Analyze
     if st.button("Analyze Answer"):
 
         if answer.strip() == "":
             st.warning("Please enter your answer.")
-        else :
+        else:
             keywords = questions[question]
 
             relevance = check_relevance(answer, keywords)
@@ -177,58 +173,45 @@ elif menu == "Results Dashboard":
     else:
         st.write("No data yet.")
 
+# -------------------------------
+# ASSISTANT
+# -------------------------------
 elif menu == "Assistant":
     st.header("💬 Smart Assistant & Daily Vocabulary")
 
-    # --- Chatbot Section ---
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
 
-    user_input = st.text_input("You:", "")
+    user_input = st.text_input("You:")
 
     if st.button("Send"):
         if user_input.strip() != "":
-            # Simple rule-based chatbot
-            response = ""
             if "improve" in user_input.lower():
-                response = "You can improve by practicing answers daily, reading, and noting keywords."
+                response = "Practice daily and structure your answers clearly."
             elif "vocab" in user_input.lower():
-                response = "Check the daily 10 words below and try using them in sentences."
-            elif "gesture" in user_input.lower():
-                response = "Maintain eye contact, smile naturally, and sit upright while speaking."
+                response = "Use daily vocabulary words in sentences."
             else:
-                response = "I can help you improve communication, vocabulary, and interview skills!"
+                response = "I can help with interview preparation and communication."
 
             st.session_state.chat_history.append(("You", user_input))
             st.session_state.chat_history.append(("Assistant", response))
 
-    # Display chat history
     for speaker, text in st.session_state.chat_history:
-        if speaker == "You":
-            st.markdown(f"**You:** {text}")
-        else:
-            st.markdown(f"**Assistant:** {text}")
+        st.markdown(f"**{speaker}:** {text}")
 
     st.divider()
 
-    # --- Daily Vocabulary Section ---
-    st.subheader("📝 Daily 10 Vocabulary Words")
+    # Vocabulary
     import random
     from datetime import date
 
-    # Your vocab list
     all_vocab = ["Eloquent", "Concise", "Persuasive", "Analytical", "Collaborative",
                  "Proactive", "Adaptable", "Meticulous", "Resilient", "Empathetic",
-                 "Assertive", "Innovative", "Strategic", "Dynamic", "Observant",
-                 "Focused", "Diplomatic", "Organized", "Charismatic", "Resourceful",
-                 "Tactful", "Curious", "Intuitive", "Versatile", "Patient",
-                 "Decisive", "Energetic", "Optimistic", "Confident", "Responsible"]
+                 "Assertive", "Innovative", "Strategic", "Dynamic", "Observant"]
 
-    # Seed random by date so words rotate daily
     random.seed(date.today().toordinal())
     daily_vocab = random.sample(all_vocab, 10)
 
-    cols = st.columns(5)
-    for i, word in enumerate(daily_vocab):
-        with cols[i % 5]:
-            st.info(word)
+    st.subheader("📝 Daily Vocabulary")
+    for word in daily_vocab:
+        st.info(word)
