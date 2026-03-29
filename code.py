@@ -117,7 +117,7 @@ elif menu == "Practice Interview":
             time.sleep(1)
 
     
-answer = st.text_area("Enter your answer:")
+        answer = st.text_area("Enter your answer:")
     # Analyze
     if st.button("Analyze Answer"):
 
