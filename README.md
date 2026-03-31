@@ -83,6 +83,10 @@ streamlit run app.py
 
 ---
 
+
+## Live Demo 📍
+https://fundamentals-of-aiml-vityarthi-nfxwakp9xbzxqktjyhicsu.streamlit.app/
+
 ## 📊 Evaluation Criteria
 
 *  Relevance to question
